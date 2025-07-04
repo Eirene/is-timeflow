@@ -1,103 +1,198 @@
-import Image from "next/image";
+import {
+  ChevronDownIcon,
+  ClockIcon,
+  PlayIcon,
+  SunIcon,
+} from "@heroicons/react/24/outline";
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="font-poppins h-full flex flex-col">
+      <header>
+        <nav className="bg-linear-to-b from-sky-700 to-sky-500 text-sky-50 tracking-wide">
+          <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+            <div className="relative flex h-16 items-center justify-between">
+              <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+                <div className="flex shrink-0 items-center">
+                  <ClockIcon className="text-sky-50 size-8" />
+                </div>
+                <div className="ml-4">
+                  <div className="relative flex gap-2">
+                    <div className="absolute inset-y-0 rounded-full bg-white/20 transition-all duration-300 ease-in-out">
+                    </div>
+                    <a
+                      href="javascript:;"
+                      className="router-link-active router-link-exact-active relative z-10 rounded-full px-3 py-2 text-sm transition-colors duration-300 text-sky-50"
+                      aria-current="page"
+                    >
+                      <span>TimeFlow</span>
+                    </a>
+                    <a
+                      href="/projects"
+                      className="relative z-10 rounded-full px-3 py-2 text-sm transition-colors duration-300 text-sky-100 hover:text-sky-50"
+                    >
+                      <span>Projects</span>
+                    </a>
+                    <a
+                      href="/invoice"
+                      className="relative z-10 rounded-full px-3 py-2 text-sm transition-colors duration-300 text-sky-100 hover:text-sky-50"
+                    >
+                      <span className="hidden xs:inline">Create Invoice</span>
+                      <span className="xs:hidden">Invoice</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center">
+                <button
+                  className="cursor-pointer p-2 size-10 rounded-full flex items-center justify-center shrink-0 transition-all duration-200 text-sky-100 hover:text-sky-50 hover:bg-white/10"
+                  title="Switch to light mode"
+                  aria-label="Switch to light mode"
+                >
+                  <SunIcon className="size-5" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div className="bg-gradient-to-b from-amber-400 to-orange-400 px-4 py-3">
+        <div className="mx-auto max-w-7xl">
+          <div className="flex items-center justify-center">
+            <div className="text-center">
+              <p className="text-amber-900 font-medium">
+                <span className="sm:hidden">
+                  🚧 IS TimeTracker IS growing! New features are coming soon.
+                </span>
+                <span className="hidden sm:inline lg:hidden">
+                  🚧 IS TimeTracker IS still in development and improving! New
+                  features are coming soon.
+                </span>
+                <span className="hidden lg:inline">
+                  🚧 Welcome to IS TimeTracker! This app IS still in development
+                  and actively improving. Exciting new features are coming soon!
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <main className="space-y-6 lg:space-y-10 p-4 sm:p-6 lg:p-8 flex flex-col grow dark:bg-slate-900">
+        <div className="mx-auto w-full max-w-3xl">
+          <div className="grid grid-cols-1">
+            <select
+              name="project"
+              className="appearance-none col-start-1 row-start-1 pr-8 block w-full rounded-full bg-white dark:bg-slate-800 px-4 py-2.5 text-base text-gray-900 dark:text-gray-100 outline-1 -outline-offset-1 outline-gray-200 dark:outline-gray-600 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-sky-600 dark:focus:outline-sky-400 sm:text-sm/6"
+            >
+              <option>Select Project</option>
+              <option
+                className="bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
+                value="pmxSdH5fITgoiZfSpAZf"
+              >
+                One more project
+              </option>
+              <option
+                className="bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
+                value="u0QcLIwbL5wFVhaAUnIv"
+              >
+                My Project
+              </option>
+            </select>
+            <ChevronDownIcon className="pointer-events-none col-start-1 row-start-1 mr-4 size-5 self-center justify-self-end text-gray-500 dark:text-gray-400 sm:size-4" />
+          </div>
+        </div>
+        <div className="text-center">
+          <div className="inline-flex items-center gap-4 p-4 pl-10 rounded-full bg-white dark:bg-slate-800 shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.15)] dark:shadow-[inset_0_2px_4px_0_rgb(0,0,0,0.3)]">
+            <div className="text-4xl w-40 text-left text-sky-950 dark:text-slate-100">
+              00:00:00
+            </div>
+            <div>
+              <button
+                type="button"
+                className="cursor-pointer size-20 rounded-full bg-linear-to-b from-sky-700 to-sky-500 text-white disabled:opacity-50 flex items-center justify-center hover:from-sky-500 hover:to-sky-500 transition-colors"
+              >
+                <PlayIcon className="size-10 translate-x-0.5" />
+              </button>
+            </div>
+          </div>
+        </div>
+        <div className="mx-auto w-full max-w-3xl">
+          <nav
+            className="relative flex bg-white dark:bg-slate-800 ring-1 ring-gray-200 dark:ring-gray-600 rounded-full p-2 justify-between *:flex-1 *:cursor-pointer"
+            aria-label="Tabs"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            <div className="absolute inset-y-2 rounded-full px-3 py-2 bg-gray-100 dark:bg-slate-700 transition-all duration-300 ease-in-out">
+            </div>
+            <button className="relative z-10 rounded-full px-3 py-2 text-sm font-medium transition-colors text-gray-700 dark:text-gray-200">
+              Today
+            </button>
+            <button className="relative z-10 rounded-full px-3 py-2 text-sm font-medium transition-colors text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
+              This Week
+            </button>
+            <button className="relative z-10 rounded-full px-3 py-2 text-sm font-medium transition-colors text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
+              This Month
+            </button>
+          </nav>
+        </div>
+        <div className="mx-auto w-full max-w-3xl p-px overflow-y-auto space-y-2">
+          <div className="flex justify-end items-center gap-1 text-xs pr-4">
+            <span className="text-gray-600 dark:text-gray-400">Total:</span>
+            <p>0h 0m 0s</p>
+          </div>
+          <div className="grid gap-2 mb-4">
+            <div className="space-y-2">
+              <div className="rounded-full p-2 bg-white dark:bg-slate-800">
+                <div className="flex gap-2 items-center">
+                  <button
+                    className="cursor-pointer p-2 size-10 rounded-full flex items-center justify-center shrink-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent text-gray-400 hover:bg-sky-50 dark:text-gray-500 dark:hover:bg-slate-700"
+                    title="Expand"
+                  >
+                    <ChevronDownIcon className="size-5" />
+                  </button>
+                  <div className="size-10 rounded-full flex justify-center items-center bg-sky-100 dark:bg-sky-900 text-sky-800 dark:text-sky-200 uppercase">
+                    Om
+                  </div>
+                  <h3>One more project</h3>
+                  <p className="ml-auto shrink-0 w-20 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">
+                    0h 0m 0s
+                  </p>
+                  <button
+                    className="cursor-pointer p-2 size-10 rounded-full flex items-center justify-center shrink-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent text-sky-600 hover:text-sky-800 hover:bg-sky-50 dark:text-sky-400 dark:hover:text-sky-300 dark:hover:bg-slate-700"
+                    title="Start timer"
+                  >
+                    <PlayIcon className="size-5 translate-x-px" />
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <div className="rounded-full p-2 bg-white dark:bg-slate-800">
+                <div className="flex gap-2 items-center">
+                  <button
+                    className="cursor-pointer p-2 size-10 rounded-full flex items-center justify-center shrink-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent text-gray-400 hover:bg-sky-50 dark:text-gray-500 dark:hover:bg-slate-700"
+                    title="Expand"
+                  >
+                    <ChevronDownIcon className="size-5" />
+                  </button>
+                  <div className="size-10 rounded-full flex justify-center items-center bg-sky-100 dark:bg-sky-900 text-sky-800 dark:text-sky-200 uppercase">
+                    MP
+                  </div>
+                  <h3>My Project</h3>
+                  <p className="ml-auto shrink-0 w-20 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">
+                    0h 0m 0s
+                  </p>
+                  <button
+                    className="cursor-pointer p-2 size-10 rounded-full flex items-center justify-center shrink-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent text-sky-600 hover:text-sky-800 hover:bg-sky-50 dark:text-sky-400 dark:hover:text-sky-300 dark:hover:bg-slate-700"
+                    title="Start timer"
+                  >
+                    <PlayIcon className="size-5 translate-x-px" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
   );
 }
