@@ -1,11 +1,5 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-  experimental: {
-    fontLoaders: [
-      { loader: "@next/font/google", options: { subsets: ["latin"] } },
-    ],
-  },
-};
+const nextConfig: NextConfig = {};
 
 export default nextConfig;
