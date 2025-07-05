@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import Header from "./components/Header";
+import DevelopmentBanner from "./components/DevelopmentBanner";
 
 export const metadata: Metadata = {
   title: "IS TimeFlow",
@@ -14,7 +16,13 @@ export default function RootLayout({
   return (
     <html lang="en" className="bg-gray-100 h-full dark">
       <body className="antialiased h-full">
-        {children}
+        <div className="font-poppins h-full flex flex-col">
+          <Header />
+          <DevelopmentBanner />
+          <main className="space-y-6 lg:space-y-10 p-4 sm:p-6 lg:p-8 flex flex-col grow dark:bg-slate-900">
+            {children}
+          </main>
+        </div>
       </body>
     </html>
   );
