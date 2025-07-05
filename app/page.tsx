@@ -1,4 +1,5 @@
 import { ChevronDownIcon, PlayIcon } from "@heroicons/react/24/outline";
+import Initials from "./components/ui/Inititals";
 
 export default function Home() {
   return (
@@ -72,9 +73,8 @@ export default function Home() {
                 >
                   <ChevronDownIcon className="size-5" />
                 </button>
-                <div className="size-10 rounded-full flex justify-center items-center bg-sky-100 dark:bg-sky-900 text-sky-800 dark:text-sky-200 uppercase">
-                  Om
-                </div>
+
+                <Initials>OM</Initials>
                 <h3>One more project</h3>
                 <p className="ml-auto shrink-0 w-20 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">
                   0h 0m 0s
@@ -97,9 +97,8 @@ export default function Home() {
                 >
                   <ChevronDownIcon className="size-5" />
                 </button>
-                <div className="size-10 rounded-full flex justify-center items-center bg-sky-100 dark:bg-sky-900 text-sky-800 dark:text-sky-200 uppercase">
-                  MP
-                </div>
+
+                <Initials>MP</Initials>
                 <h3>My Project</h3>
                 <p className="ml-auto shrink-0 w-20 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">
                   0h 0m 0s
