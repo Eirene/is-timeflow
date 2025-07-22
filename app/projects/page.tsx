@@ -99,7 +99,7 @@ export default function Projects() {
     };
 
     return (
-        <div className="space-y-6 lg:space-y-10">
+        <div className="mx-auto w-full max-w-3xl space-y-6 lg:space-y-10">
             <form className="space-y-5" onSubmit={addNewProject}>
                 <Input
                     value={newProjectName}
