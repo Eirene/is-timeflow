@@ -14,6 +14,7 @@ import {
 import Initials from "./ui/Inititals";
 import { useTimeFormat } from "../hooks/useTimeFormat";
 import { ButtonIcon } from "./ui/ButtonIcon";
+import { Tabs } from "./ui/Tabs";
 
 export default function TimeRecords() {
     const { formatTime } = useTimeFormat();
@@ -30,6 +31,7 @@ export default function TimeRecords() {
     }[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [activeTab, setActiveTab] = useState<"day" | "week" | "month">("day");
     const [expandedProjects, setExpandedProjects] = useState<Set<string>>(
         new Set(),
     );
@@ -99,20 +101,16 @@ export default function TimeRecords() {
     return (
         <>
             <div className="mx-auto w-full max-w-3xl">
-                <nav
-                    className="relative flex bg-white dark:bg-slate-800 ring-1 ring-gray-200 dark:ring-gray-600 rounded-full p-2 justify-between *:flex-1 *:cursor-pointer"
-                    aria-label="Tabs"
-                >
-                    <button className="relative z-10 rounded-full px-3 py-2 text-sm font-medium transition-colors text-gray-700 dark:text-gray-200 bg-white/20">
-                        Today
-                    </button>
-                    <button className="relative z-10 rounded-full px-3 py-2 text-sm font-medium transition-colors text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
-                        This Week
-                    </button>
-                    <button className="relative z-10 rounded-full px-3 py-2 text-sm font-medium transition-colors text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
-                        This Month
-                    </button>
-                </nav>
+                <Tabs
+                    tabs={[
+                        { id: "day", label: "Day" },
+                        { id: "week", label: "This Week" },
+                        { id: "month", label: "This Month" },
+                    ]}
+                    activeTab={activeTab}
+                    onTabChange={(tabId) =>
+                        setActiveTab(tabId as "day" | "week" | "month")}
+                />
             </div>
             <div className="mx-auto w-full max-w-3xl p-px overflow-y-auto space-y-2">
                 <div className="flex justify-end items-center gap-1 text-xs pr-4">
