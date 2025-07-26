@@ -3,15 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../lib/firebase";
-
-interface TimeRecord {
-    id?: string;
-    date: string;
-    startTime: number;
-    duration: number;
-    projectId: string;
-    endTime: number;
-}
+import { TimeRecord } from "../types/timeRecord";
 
 export const useTimeTracking = () => {
     const [isRunning, setIsRunning] = useState(false);
@@ -51,9 +43,7 @@ export const useTimeTracking = () => {
     }, [isRunning, runningProjectId, elapsedTime, startTime, timerId]);
 
     const startTimer = useCallback((projectId: string) => {
-        if (isRunning) {
-            stopTimer();
-        }
+        if (isRunning) stopTimer();
 
         setIsRunning(true);
         setRunningProjectId(projectId);

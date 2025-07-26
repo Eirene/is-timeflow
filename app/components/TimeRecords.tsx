@@ -5,15 +5,45 @@ import { useEffect, useState } from "react";
 import Card from "./ui/Card";
 import { ProjectsSkeleton } from "../components/ProjectsSkeleton";
 
-import { ChevronDownIcon, PlayIcon } from "@heroicons/react/24/outline";
+import {
+    CalendarDaysIcon,
+    ChevronDownIcon,
+    ClockIcon,
+    PlayIcon,
+} from "@heroicons/react/24/outline";
 import Initials from "./ui/Inititals";
+import { useTimeFormat } from "../hooks/useTimeFormat";
 
 export default function TimeRecords() {
+    const { formatTime } = useTimeFormat();
     const [projects, setProjects] = useState<{ id: string; name: string }[]>(
         [],
     );
+    const [records, setRecords] = useState<{
+        id: string;
+        projectId: string;
+        startTime: number;
+        endTime: number;
+        duration: number;
+        date: string;
+    }[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [expandedProjects, setExpandedProjects] = useState<Set<string>>(
+        new Set(),
+    );
+
+    const toggleProjectExpansion = (projectId: string) => {
+        setExpandedProjects((prev) => {
+            const newSet = new Set(prev);
+            if (newSet.has(projectId)) {
+                newSet.delete(projectId);
+            } else {
+                newSet.add(projectId);
+            }
+            return newSet;
+        });
+    };
 
     useEffect(() => {
         // Reset error state
@@ -26,6 +56,7 @@ export default function TimeRecords() {
                     name: doc.data().name as string,
                 }));
                 setProjects(projectsData);
+                console.log("Fetched projects:", projectsData);
             } catch (error) {
                 console.error("Error fetching projects:", error);
                 setError("Failed to get projects. Please try again.");
@@ -36,6 +67,34 @@ export default function TimeRecords() {
 
         fetchProjects();
     }, []);
+
+    useEffect(() => {
+        // Reset error state
+        setError("");
+        const fetchRecords = async () => {
+            try {
+                const querySnapshot = await getDocs(
+                    collection(db, "records"),
+                );
+                const recordsData = querySnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    projectId: doc.data().projectId as string,
+                    startTime: doc.data().startTime as number,
+                    endTime: doc.data().endTime as number,
+                    duration: doc.data().duration as number,
+                    date: doc.data().date as string,
+                }));
+                setRecords(recordsData);
+                console.log("Fetched time records:", recordsData);
+            } catch (error) {
+                console.error("Error fetching time records:", error);
+                setError("Failed to get time records. Please try again.");
+            }
+        };
+
+        fetchRecords();
+    }, []);
+
     return (
         <>
             <div className="mx-auto w-full max-w-3xl">
@@ -43,7 +102,7 @@ export default function TimeRecords() {
                     className="relative flex bg-white dark:bg-slate-800 ring-1 ring-gray-200 dark:ring-gray-600 rounded-full p-2 justify-between *:flex-1 *:cursor-pointer"
                     aria-label="Tabs"
                 >
-                    <button className="relative z-10 rounded-full px-3 py-2 text-sm font-medium transition-colors text-gray-700 dark:text-gray-200 bg-white/20 rounded-full">
+                    <button className="relative z-10 rounded-full px-3 py-2 text-sm font-medium transition-colors text-gray-700 dark:text-gray-200 bg-white/20">
                         Today
                     </button>
                     <button className="relative z-10 rounded-full px-3 py-2 text-sm font-medium transition-colors text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
@@ -65,34 +124,124 @@ export default function TimeRecords() {
                 {error && <p className="text-sm text-red-500">{error}</p>}
 
                 {/* Project Cards  */}
-                {loading
-                    ? <ProjectsSkeleton />
-                    : projects.length > 0
-                    ? projects.map((project) => (
-                        <Card key={project.id}>
-                            <div className="flex gap-2 items-center">
-                                <button
-                                    className="cursor-pointer p-2 size-10 rounded-full flex items-center justify-center shrink-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent text-gray-400 hover:bg-sky-50 dark:text-gray-500 dark:hover:bg-slate-700"
-                                    title="Expand"
-                                >
-                                    <ChevronDownIcon className="size-5" />
-                                </button>
+                <div className="grid gap-2 mb-4">
+                    {loading
+                        ? <ProjectsSkeleton />
+                        : projects.length > 0
+                        ? projects.map((project) => {
+                            const isExpanded = expandedProjects.has(project.id);
+                            return (
+                                <div key={project.id} className="space-y-2">
+                                    <Card>
+                                        <div className="flex gap-2 items-center">
+                                            <button
+                                                onClick={() =>
+                                                    toggleProjectExpansion(
+                                                        project.id,
+                                                    )}
+                                                className="cursor-pointer p-2 size-10 rounded-full flex items-center justify-center shrink-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent text-gray-400 hover:bg-sky-50 dark:text-gray-500 dark:hover:bg-slate-700"
+                                                title="Expand"
+                                            >
+                                                <ChevronDownIcon
+                                                    className={`size-5 transition-all duration-300 ease-in-out ${
+                                                        isExpanded
+                                                            ? "rotate-180"
+                                                            : ""
+                                                    }`}
+                                                />
+                                            </button>
 
-                                <Initials>P</Initials>
-                                <h3>{project.name}</h3>
-                                <p className="ml-auto shrink-0 w-20 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">
-                                    0h 0m 0s
-                                </p>
-                                <button
-                                    className="cursor-pointer p-2 size-10 rounded-full flex items-center justify-center shrink-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent text-sky-600 hover:text-sky-800 hover:bg-sky-50 dark:text-sky-400 dark:hover:text-sky-300 dark:hover:bg-slate-700"
-                                    title="Start timer"
-                                >
-                                    <PlayIcon className="size-5 translate-x-px" />
-                                </button>
-                            </div>
-                        </Card>
-                    ))
-                    : "No projects yet. Create one!"}
+                                            <Initials>P</Initials>
+                                            <h3>{project.name}</h3>
+
+                                            {records.length > 0 &&
+                                                    records.some(
+                                                        (record) =>
+                                                            record.projectId ===
+                                                                project.id,
+                                                    )
+                                                ? (
+                                                    <p className="ml-auto shrink-0 w-20 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap tracking-wide">
+                                                        {formatTime(
+                                                            records
+                                                                .filter(
+                                                                    (record) =>
+                                                                        record
+                                                                            .projectId ===
+                                                                            project
+                                                                                .id,
+                                                                )
+                                                                .reduce(
+                                                                    (
+                                                                        total,
+                                                                        record,
+                                                                    ) => total +
+                                                                        record
+                                                                            .duration,
+                                                                    0,
+                                                                ),
+                                                        )}
+                                                    </p>
+                                                )
+                                                : (
+                                                    <p className="ml-auto shrink-0 w-20 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap tracking-wide">
+                                                        0h 0m 0s
+                                                    </p>
+                                                )}
+                                            <button
+                                                className="cursor-pointer p-2 size-10 rounded-full flex items-center justify-center shrink-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent text-sky-600 hover:text-sky-800 hover:bg-sky-50 dark:text-sky-400 dark:hover:text-sky-300 dark:hover:bg-slate-700"
+                                                title="Start timer"
+                                            >
+                                                <PlayIcon className="size-5 translate-x-px" />
+                                            </button>
+                                        </div>
+                                    </Card>
+
+                                    {records.length > 0
+                                        ? (
+                                            <div
+                                                className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                                                    isExpanded
+                                                        ? "max-h-96"
+                                                        : "max-h-0"
+                                                }`}
+                                            >
+                                                <div className="bg-white dark:bg-slate-800 py-2 rounded-3xl space-y-2 overflow-hidden">
+                                                    {records
+                                                        .filter((record) =>
+                                                            record.projectId ===
+                                                                project.id
+                                                        )
+                                                        .map((record) => (
+                                                            <div
+                                                                key={record.id}
+                                                                className="flex items-center gap-2 pl-4 pr-14 py-2 hover:bg-gray-50 dark:hover:bg-slate-700"
+                                                            >
+                                                                <CalendarDaysIcon className="text-gray-400 size-5" />
+                                                                <span className="flex-1 text-gray-400  tracking-wide">
+                                                                    {record
+                                                                        .date}
+                                                                </span>
+
+                                                                <ClockIcon className="text-gray-400 size-5" />
+
+                                                                <span className=" text-gray-700 dark:text-gray-300 tracking-wide w-20">
+                                                                    {formatTime(
+                                                                        record
+                                                                            .duration,
+                                                                    )}
+                                                                </span>
+                                                            </div>
+                                                        ))}
+                                                </div>
+                                            </div>
+                                        )
+                                        : ""}
+                                </div>
+                            );
+                        })
+                        : "No projects yet. Create one!"}
+                </div>
             </div>
         </>
     );
