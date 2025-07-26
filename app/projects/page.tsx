@@ -125,6 +125,7 @@ export default function Projects() {
                                     {project.name}
                                 </span>
                                 <ButtonIcon
+                                    color="red"
                                     onClick={() => deleteProject(project.id)}
                                 >
                                     <TrashIcon className="size-5" />

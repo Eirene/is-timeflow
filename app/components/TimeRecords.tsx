@@ -13,6 +13,7 @@ import {
 } from "@heroicons/react/24/outline";
 import Initials from "./ui/Inititals";
 import { useTimeFormat } from "../hooks/useTimeFormat";
+import { ButtonIcon } from "./ui/ButtonIcon";
 
 export default function TimeRecords() {
     const { formatTime } = useTimeFormat();
@@ -134,12 +135,12 @@ export default function TimeRecords() {
                                 <div key={project.id} className="space-y-2">
                                     <Card>
                                         <div className="flex gap-2 items-center">
-                                            <button
+                                            <ButtonIcon
+                                                color="gray"
                                                 onClick={() =>
                                                     toggleProjectExpansion(
                                                         project.id,
                                                     )}
-                                                className="cursor-pointer p-2 size-10 rounded-full flex items-center justify-center shrink-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent text-gray-400 hover:bg-sky-50 dark:text-gray-500 dark:hover:bg-slate-700"
                                                 title="Expand"
                                             >
                                                 <ChevronDownIcon
@@ -149,7 +150,7 @@ export default function TimeRecords() {
                                                             : ""
                                                     }`}
                                                 />
-                                            </button>
+                                            </ButtonIcon>
 
                                             <Initials>P</Initials>
                                             <h3>{project.name}</h3>
@@ -188,12 +189,13 @@ export default function TimeRecords() {
                                                         0h 0m 0s
                                                     </p>
                                                 )}
-                                            <button
-                                                className="cursor-pointer p-2 size-10 rounded-full flex items-center justify-center shrink-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent text-sky-600 hover:text-sky-800 hover:bg-sky-50 dark:text-sky-400 dark:hover:text-sky-300 dark:hover:bg-slate-700"
+
+                                            <ButtonIcon
+                                                color="sky"
                                                 title="Start timer"
                                             >
                                                 <PlayIcon className="size-5 translate-x-px" />
-                                            </button>
+                                            </ButtonIcon>
                                         </div>
                                     </Card>
 
