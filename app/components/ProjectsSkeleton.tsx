@@ -15,8 +15,10 @@ export const ProjectsSkeleton = () => {
                         <div className="h-4 w-40 rounded bg-gray-200 dark:bg-gray-700">
                         </div>
 
-                        <div className="ml-auto size-10 rounded-full bg-gray-200 dark:bg-gray-700">
-                        </div>
+                        {
+                            /* <div className="ml-auto size-10 rounded-full bg-gray-200 dark:bg-gray-700">
+                        </div> */
+                        }
                     </div>
                 </div>
             ))}
