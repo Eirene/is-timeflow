@@ -11,7 +11,7 @@ import {
     ClockIcon,
     PlayIcon,
 } from "@heroicons/react/24/outline";
-import Initials from "./ui/Inititals";
+import Initials from "./ui/Initials";
 import { useTimeFormat } from "../hooks/useTimeFormat";
 import { ButtonIcon } from "./ui/ButtonIcon";
 import { Tabs } from "./ui/Tabs";
@@ -150,7 +150,7 @@ export default function TimeRecords() {
                                                 />
                                             </ButtonIcon>
 
-                                            <Initials>P</Initials>
+                                            <Initials name={project.name} />
                                             <h3>{project.name}</h3>
 
                                             {records.length > 0 &&
