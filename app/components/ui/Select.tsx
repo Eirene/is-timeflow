@@ -22,7 +22,7 @@ export default function Select({
     items,
     value = "",
     name = "",
-    placeholder = "Выберите значение",
+    placeholder = "Choose an option",
     onChange,
     className = "",
     disabled = false,
