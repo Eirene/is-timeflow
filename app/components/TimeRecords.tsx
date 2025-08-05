@@ -55,7 +55,6 @@ export default function TimeRecords() {
                     name: doc.data().name as string,
                 }));
                 setProjects(projectsData);
-                console.log("Fetched projects:", projectsData);
             } catch (error) {
                 console.error("Error fetching projects:", error);
                 setError("Failed to get projects. Please try again.");
@@ -84,7 +83,6 @@ export default function TimeRecords() {
                     date: doc.data().date as string,
                 }));
                 setRecords(recordsData);
-                console.log("Fetched time records:", recordsData);
             } catch (error) {
                 console.error("Error fetching time records:", error);
                 setError("Failed to get time records. Please try again.");

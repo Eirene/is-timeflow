@@ -1,12 +1,5 @@
 "use client";
-import {
-    addDoc,
-    collection,
-    deleteDoc,
-    doc,
-    getDocs,
-} from "firebase/firestore";
-import { db } from "../lib/firebase";
+import { useProjectStore } from "../store/projectStore";
 import { useEffect, useState } from "react";
 import { FolderIcon, TrashIcon } from "@heroicons/react/24/outline";
 import ListContainer from "../components/ui/ListContainer";
@@ -17,84 +10,30 @@ import { ButtonIcon } from "../components/ui/ButtonIcon";
 import { ProjectsSkeleton } from "../components/ProjectsSkeleton";
 
 export default function Projects() {
-    const [projects, setProjects] = useState<{ id: string; name: string }[]>(
-        [],
-    );
-    const [loading, setLoading] = useState(true);
+    const {
+        projects,
+        isAdding,
+        isLoading,
+        isDeleting,
+        addProject,
+        fetchProjects,
+        deleteProject,
+    } = useProjectStore();
     const [newProjectName, setNewProjectName] = useState("");
-    const [saving, setSaving] = useState(false);
     const [error, setError] = useState("");
 
     useEffect(() => {
-        const fetchProjects = async () => {
-            try {
-                const querySnapshot = await getDocs(collection(db, "projects"));
-                const projectsData = querySnapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    name: doc.data().name as string,
-                }));
-                setProjects(projectsData);
-            } catch (error) {
-                console.error("Error fetching projects:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchProjects();
-    }, []);
+    }, [fetchProjects]);
 
     const addNewProject = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!newProjectName.trim()) return setError("Project name is required");
 
-        // Reset error state
-        setError("");
-
-        // Validate project name
-        if (!newProjectName.trim()) {
-            setError("Project name is required");
-            return;
-        }
-
-        setSaving(true);
         try {
-            // Add new project to Firebase
-            const docRef = await addDoc(collection(db, "projects"), {
-                name: newProjectName.trim(),
-                createdAt: new Date(),
-            });
-
-            // Update list of projects in state
-            setProjects((prevProjects) => [
-                ...prevProjects,
-                { id: docRef.id, name: newProjectName.trim() },
-            ]);
-
-            // Reset input field
+            await addProject(newProjectName);
             setNewProjectName("");
-        } catch (error) {
-            console.error("Error adding project:", error);
-            setError("Failed to add project. Please try again.");
-        } finally {
-            setSaving(false);
-        }
-    };
-
-    const deleteProject = async (id: string) => {
-        console.log("Attempting to delete project with id:", id);
-        if (!confirm("Are you sure you want to delete this project?")) return;
-        try {
-            await deleteDoc(doc(db, "projects", id));
-
-            // Update local state to remove the deleted project
-            setProjects((prevProjects) =>
-                prevProjects.filter((project) => project.id !== id)
-            );
-
-            console.log("Project deleted successfully");
-        } catch (error) {
-            console.error("Error deleting record:", error);
-            alert("Error deleting project: " + error);
+        } catch {
         }
     };
 
@@ -109,13 +48,15 @@ export default function Projects() {
 
                 {error && <p className="text-sm text-red-500">{error}</p>}
                 <div className="text-right">
-                    <Button type="submit" disabled={saving}>
-                        {saving ? "Saving..." : "Save"}
+                    <Button type="submit" disabled={isAdding || isLoading}>
+                        {isAdding ? "Adding..." : "Add Project"}
                     </Button>
                 </div>
             </form>
 
-            {loading ? <ProjectsSkeleton /> : projects.length > 0
+            {isLoading
+                ? <ProjectsSkeleton />
+                : projects.length > 0
                 ? (
                     <ListContainer>
                         {projects.map((project) => (
