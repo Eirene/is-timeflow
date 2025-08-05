@@ -1,14 +1,13 @@
 "use client";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../lib/firebase";
+import { useProjectStore } from "../store/projectStore";
 import { useCallback, useEffect, useState } from "react";
 import { PlayIcon, StopIcon } from "@heroicons/react/24/outline";
 import { useTimeTracking } from "../hooks/useTimeTracking";
 import Select from "./ui/Select";
 
 export default function TimeTracker() {
+  const { projects, fetchProjects } = useProjectStore();
   const { isRunning, elapsedTime, startTimer, stopTimer } = useTimeTracking();
-  const [projects, setProjects] = useState<{ id: string; name: string }[]>([]);
   const [selectedProjectId, setSelectedProjectId] = useState<string>("");
   const [error, setError] = useState("");
 
@@ -36,23 +35,8 @@ export default function TimeTracker() {
   }, [isRunning, selectedProjectId, startTimer, stopTimer]);
 
   useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, "projects"));
-        const projectsData = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          name: doc.data().name as string,
-        }));
-        setProjects(projectsData);
-        setSelectedProjectId(projectsData[0]?.id || "");
-      } catch (err) {
-        console.error("Error fetching projects:", err);
-        setError("Failed to load projects. Please try again.");
-      }
-    };
-
     fetchProjects();
-  }, []);
+  }, [fetchProjects]);
 
   return (
     <div className="space-y-6">
