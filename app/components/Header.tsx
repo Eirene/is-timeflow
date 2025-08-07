@@ -68,7 +68,7 @@ export default function Header() {
                                     </Link>
                                 </div>
                             </div>
-                            <div className="flex items-center">
+                            <div className="ml-auto flex items-center">
                                 <ThemeToggle />
                             </div>
                         </div>
