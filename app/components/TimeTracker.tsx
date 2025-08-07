@@ -6,10 +6,16 @@ import { useTimeTracking } from "../hooks/useTimeTracking";
 import Select from "./ui/Select";
 
 export default function TimeTracker() {
-  const { projects, fetchProjects } = useProjectStore();
+  const { projects, subscribe } = useProjectStore();
   const { isRunning, elapsedTime, startTimer, stopTimer } = useTimeTracking();
   const [selectedProjectId, setSelectedProjectId] = useState<string>("");
   const [error, setError] = useState("");
+
+  // Subscription to Firestore updates
+  useEffect(() => {
+    const unsubscribe = subscribe();
+    return () => unsubscribe();
+  }, [subscribe]);
 
   const formatTime = useCallback((ms: number) => {
     const totalSeconds = Math.floor(ms / 1000);
@@ -33,10 +39,6 @@ export default function TimeTracker() {
     }
     setError("");
   }, [isRunning, selectedProjectId, startTimer, stopTimer]);
-
-  useEffect(() => {
-    fetchProjects();
-  }, [fetchProjects]);
 
   return (
     <div className="space-y-6">

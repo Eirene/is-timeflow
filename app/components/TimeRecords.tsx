@@ -1,4 +1,5 @@
 "use client";
+import { useProjectStore } from "../store/projectStore";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../lib/firebase";
 import { useEffect, useState } from "react";
@@ -13,10 +14,14 @@ import { Tabs } from "./ui/Tabs";
 import TimeLog from "./TimeLog";
 
 export default function TimeRecords() {
+    const {
+        projects,
+        isLoading,
+        subscribe,
+
+    } = useProjectStore();
+
     const { formatTime } = useTimeFormat();
-    const [projects, setProjects] = useState<{ id: string; name: string }[]>(
-        [],
-    );
     const [records, setRecords] = useState<{
         id: string;
         projectId: string;
@@ -25,12 +30,17 @@ export default function TimeRecords() {
         duration: number;
         date: string;
     }[]>([]);
-    const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [activeTab, setActiveTab] = useState<"day" | "week" | "month">("day");
     const [expandedProjects, setExpandedProjects] = useState<Set<string>>(
         new Set(),
     );
+
+      // Subscription to Firestore updates
+  useEffect(() => {
+    const unsubscribe = subscribe();
+    return () => unsubscribe();
+  }, [subscribe]);
 
     const toggleProjectExpansion = (projectId: string) => {
         setExpandedProjects((prev) => {
@@ -43,28 +53,6 @@ export default function TimeRecords() {
             return newSet;
         });
     };
-
-    useEffect(() => {
-        // Reset error state
-        setError("");
-        const fetchProjects = async () => {
-            try {
-                const querySnapshot = await getDocs(collection(db, "projects"));
-                const projectsData = querySnapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    name: doc.data().name as string,
-                }));
-                setProjects(projectsData);
-            } catch (error) {
-                console.error("Error fetching projects:", error);
-                setError("Failed to get projects. Please try again.");
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchProjects();
-    }, []);
 
     useEffect(() => {
         // Reset error state
@@ -118,7 +106,7 @@ export default function TimeRecords() {
 
                 {/* Project Cards  */}
                 <div className="grid gap-2 mb-4">
-                    {loading
+                    {isLoading
                         ? <ProjectsSkeleton />
                         : projects.length > 0
                         ? projects.map((project) => {

@@ -24,7 +24,7 @@ export default function Projects() {
     const [newProjectName, setNewProjectName] = useState("");
     const [localError, setLocalError] = useState("");
 
-    // Подписка на обновления Firestore
+    // Subscription to Firestore updates
     useEffect(() => {
         const unsubscribe = subscribe();
         return () => unsubscribe();
