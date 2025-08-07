@@ -1,28 +1,27 @@
 "use client";
 import { useProjectsStore } from "../store/projectsStore";
 import { useRecordsStore } from "../store/recordsStore";
-import { useEffect, useState } from "react";
-import Card from "./ui/Card";
-import { ProjectsSkeleton } from "../components/ProjectsSkeleton";
+import { useEffect, useMemo, useState } from "react";
 
-import { ChevronDownIcon, PlayIcon } from "@heroicons/react/24/outline";
+import Card from "./ui/Card";
 import Initials from "./ui/Initials";
+import TimeLog from "./TimeLog";
+
+import { ProjectsSkeleton } from "../components/ProjectsSkeleton";
+import { ChevronDownIcon, PlayIcon } from "@heroicons/react/24/outline";
 import { useTimeFormat } from "../hooks/useTimeFormat";
 import { ButtonIcon } from "./ui/ButtonIcon";
 import { Tabs } from "./ui/Tabs";
-import TimeLog from "./TimeLog";
 
 export default function TimeRecords() {
     const {
         projects,
         isLoading,
         error: projectError,
-
         subscribe,
     } = useProjectsStore();
     const {
         records,
-
         error: recordsError,
         subscribe: subscribeRecords,
     } = useRecordsStore();
@@ -32,6 +31,47 @@ export default function TimeRecords() {
     const [expandedProjects, setExpandedProjects] = useState<Set<string>>(
         new Set(),
     );
+
+    // Filter records based on selected period
+    const filteredRecords = useMemo(() => {
+        const now = new Date();
+        let startTime: number;
+
+        switch (activeTab) {
+            case "day":
+                startTime = new Date(
+                    now.getFullYear(),
+                    now.getMonth(),
+                    now.getDate(),
+                ).getTime();
+                break;
+            case "week":
+                const startOfWeek = new Date(now);
+                startOfWeek.setDate(now.getDate() - now.getDay());
+                startOfWeek.setHours(0, 0, 0, 0);
+                startTime = startOfWeek.getTime();
+                break;
+            case "month":
+                startTime = new Date(
+                    now.getFullYear(),
+                    now.getMonth(),
+                    1,
+                ).getTime();
+                break;
+            default:
+                startTime = 0;
+        }
+
+        return records.filter((record) => record.endTime >= startTime);
+    }, [records, activeTab]);
+
+    // Calculate total time for the selected period
+    const totalTime = useMemo(() => {
+        return filteredRecords.reduce(
+            (total, record) => total + record.duration,
+            0,
+        );
+    }, [filteredRecords]);
 
     // Subscription to Firestore updates with error handling
     useEffect(() => {
@@ -84,7 +124,7 @@ export default function TimeRecords() {
                     <span className="text-gray-600 dark:text-gray-400">
                         Total:
                     </span>
-                    <p>0h 0m 0s</p>
+                    <p>{formatTime(totalTime)}</p>
                 </div>
 
                 {/* Project Cards  */}
@@ -99,6 +139,16 @@ export default function TimeRecords() {
                         : projects.length > 0
                         ? projects.map((project) => {
                             const isExpanded = expandedProjects.has(project.id);
+                            // Calculate project total for the filtered period
+                            const projectTotal = filteredRecords
+                                .filter((record) =>
+                                    record.projectId === project.id
+                                )
+                                .reduce(
+                                    (total, record) => total + record.duration,
+                                    0,
+                                );
+
                             return (
                                 <div key={project.id} className="space-y-2">
                                     <Card>
@@ -126,40 +176,9 @@ export default function TimeRecords() {
                                             <Initials name={project.name} />
                                             <h3>{project.name}</h3>
 
-                                            {records.length > 0 &&
-                                                    records.some(
-                                                        (record) =>
-                                                            record.projectId ===
-                                                                project.id,
-                                                    )
-                                                ? (
-                                                    <p className="ml-auto shrink-0 w-20 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap tracking-wide">
-                                                        {formatTime(
-                                                            records
-                                                                .filter(
-                                                                    (record) =>
-                                                                        record
-                                                                            .projectId ===
-                                                                            project
-                                                                                .id,
-                                                                )
-                                                                .reduce(
-                                                                    (
-                                                                        total,
-                                                                        record,
-                                                                    ) => total +
-                                                                        record
-                                                                            .duration,
-                                                                    0,
-                                                                ),
-                                                        )}
-                                                    </p>
-                                                )
-                                                : (
-                                                    <p className="ml-auto shrink-0 w-20 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap tracking-wide">
-                                                        0h 0m 0s
-                                                    </p>
-                                                )}
+                                            <p className="ml-auto shrink-0 w-20 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap tracking-wide">
+                                                {formatTime(projectTotal)}
+                                            </p>
 
                                             <ButtonIcon
                                                 color="sky"
@@ -171,7 +190,7 @@ export default function TimeRecords() {
                                     </Card>
 
                                     <TimeLog
-                                        records={records}
+                                        records={filteredRecords}
                                         projectId={project.id}
                                         isExpanded={isExpanded}
                                     />
