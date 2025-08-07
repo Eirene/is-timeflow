@@ -5,6 +5,8 @@ import { PlayIcon, StopIcon } from "@heroicons/react/24/outline";
 import { useTimeTracking } from "../hooks/useTimeTracking";
 import Select from "./ui/Select";
 
+const SELECTED_PROJECT_KEY = "timeTracker_selectedProjectId";
+
 export default function TimeTracker() {
   const { projects, subscribe } = useProjectsStore();
   const { isRunning, elapsedTime, startTimer, stopTimer } = useTimeTracking();
@@ -16,6 +18,30 @@ export default function TimeTracker() {
     const unsubscribe = subscribe();
     return () => unsubscribe();
   }, [subscribe]);
+
+  // Load selected project from localStorage and set default if needed
+  useEffect(() => {
+    if (projects.length === 0) return;
+
+    const savedProjectId = localStorage.getItem(SELECTED_PROJECT_KEY);
+
+    if (savedProjectId && projects.some((p) => p.id === savedProjectId)) {
+      // Use saved project if it exists in current projects
+      setSelectedProjectId(savedProjectId);
+    } else {
+      // Use first project as default and save to localStorage
+      const firstProjectId = projects[0].id;
+      setSelectedProjectId(firstProjectId);
+      localStorage.setItem(SELECTED_PROJECT_KEY, firstProjectId);
+    }
+  }, [projects]);
+
+  // Save selected project to localStorage when it changes
+  const handleProjectChange = useCallback((projectId: string) => {
+    setSelectedProjectId(projectId);
+    localStorage.setItem(SELECTED_PROJECT_KEY, projectId);
+    setError("");
+  }, []);
 
   const formatTime = useCallback((ms: number) => {
     const totalSeconds = Math.floor(ms / 1000);
@@ -51,7 +77,7 @@ export default function TimeTracker() {
         <Select
           items={projects.map((p) => ({ id: p.id, text: p.name }))}
           value={selectedProjectId}
-          onChange={setSelectedProjectId}
+          onChange={handleProjectChange}
           disabled={isRunning}
         />
       </div>
