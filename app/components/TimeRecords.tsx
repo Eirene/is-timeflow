@@ -1,7 +1,6 @@
 "use client";
-import { useProjectStore } from "../store/projectStore";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../lib/firebase";
+import { useProjectsStore } from "../store/projectsStore";
+import { useRecordsStore } from "../store/recordsStore";
 import { useEffect, useState } from "react";
 import Card from "./ui/Card";
 import { ProjectsSkeleton } from "../components/ProjectsSkeleton";
@@ -17,30 +16,41 @@ export default function TimeRecords() {
     const {
         projects,
         isLoading,
-        subscribe,
+        error: projectError,
 
-    } = useProjectStore();
+        subscribe,
+    } = useProjectsStore();
+    const {
+        records,
+
+        error: recordsError,
+        subscribe: subscribeRecords,
+    } = useRecordsStore();
 
     const { formatTime } = useTimeFormat();
-    const [records, setRecords] = useState<{
-        id: string;
-        projectId: string;
-        startTime: number;
-        endTime: number;
-        duration: number;
-        date: string;
-    }[]>([]);
-    const [error, setError] = useState("");
     const [activeTab, setActiveTab] = useState<"day" | "week" | "month">("day");
     const [expandedProjects, setExpandedProjects] = useState<Set<string>>(
         new Set(),
     );
 
-      // Subscription to Firestore updates
-  useEffect(() => {
-    const unsubscribe = subscribe();
-    return () => unsubscribe();
-  }, [subscribe]);
+    // Subscription to Firestore updates with error handling
+    useEffect(() => {
+        try {
+            const unsubscribe = subscribe();
+            return () => unsubscribe();
+        } catch (err) {
+            console.error("Failed to subscribe to projects:", err);
+        }
+    }, [subscribe]);
+
+    useEffect(() => {
+        try {
+            const unsubscribeRecords = subscribeRecords();
+            return () => unsubscribeRecords();
+        } catch (err) {
+            console.error("Failed to subscribe to records:", err);
+        }
+    }, [subscribeRecords]);
 
     const toggleProjectExpansion = (projectId: string) => {
         setExpandedProjects((prev) => {
@@ -53,32 +63,7 @@ export default function TimeRecords() {
             return newSet;
         });
     };
-
-    useEffect(() => {
-        // Reset error state
-        setError("");
-        const fetchRecords = async () => {
-            try {
-                const querySnapshot = await getDocs(
-                    collection(db, "records"),
-                );
-                const recordsData = querySnapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    projectId: doc.data().projectId as string,
-                    startTime: doc.data().startTime as number,
-                    endTime: doc.data().endTime as number,
-                    duration: doc.data().duration as number,
-                    date: doc.data().date as string,
-                }));
-                setRecords(recordsData);
-            } catch (error) {
-                console.error("Error fetching time records:", error);
-                setError("Failed to get time records. Please try again.");
-            }
-        };
-
-        fetchRecords();
-    }, []);
+    const displayError = projectError || recordsError;
 
     return (
         <>
@@ -102,9 +87,12 @@ export default function TimeRecords() {
                     <p>0h 0m 0s</p>
                 </div>
 
-                {error && <p className="text-sm text-red-500">{error}</p>}
-
                 {/* Project Cards  */}
+
+                {displayError && (
+                    <p className="text-sm text-red-500">{displayError}</p>
+                )}
+
                 <div className="grid gap-2 mb-4">
                     {isLoading
                         ? <ProjectsSkeleton />

@@ -1,5 +1,5 @@
 "use client";
-import { useProjectStore } from "../store/projectStore";
+import { useProjectsStore } from "../store/projectsStore";
 import { useEffect, useState } from "react";
 import { FolderIcon, TrashIcon } from "@heroicons/react/24/outline";
 import ListContainer from "../components/ui/ListContainer";
@@ -19,7 +19,7 @@ export default function Projects() {
         subscribe,
         addProject,
         deleteProject,
-    } = useProjectStore();
+    } = useProjectsStore();
 
     const [newProjectName, setNewProjectName] = useState("");
     const [localError, setLocalError] = useState("");

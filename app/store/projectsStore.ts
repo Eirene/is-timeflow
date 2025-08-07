@@ -13,7 +13,7 @@ interface Project {
     name: string;
 }
 
-interface ProjectStore {
+interface ProjectsStore {
     projects: Project[];
     isAdding: boolean;
     isLoading: boolean; // Возвращаем isLoading
@@ -24,7 +24,7 @@ interface ProjectStore {
     deleteProject: (id: string) => Promise<void>;
 }
 
-export const useProjectStore = create<ProjectStore>((set) => ({
+export const useProjectsStore = create<ProjectsStore>((set) => ({
     projects: [],
     isAdding: false,
     isLoading: true,

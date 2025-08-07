@@ -1,12 +1,12 @@
 "use client";
-import { useProjectStore } from "../store/projectStore";
+import { useProjectsStore } from "../store/projectsStore";
 import { useCallback, useEffect, useState } from "react";
 import { PlayIcon, StopIcon } from "@heroicons/react/24/outline";
 import { useTimeTracking } from "../hooks/useTimeTracking";
 import Select from "./ui/Select";
 
 export default function TimeTracker() {
-  const { projects, subscribe } = useProjectStore();
+  const { projects, subscribe } = useProjectsStore();
   const { isRunning, elapsedTime, startTimer, stopTimer } = useTimeTracking();
   const [selectedProjectId, setSelectedProjectId] = useState<string>("");
   const [error, setError] = useState("");
