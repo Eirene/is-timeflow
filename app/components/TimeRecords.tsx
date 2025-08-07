@@ -102,15 +102,18 @@ export default function TimeRecords() {
                             return (
                                 <div key={project.id} className="space-y-2">
                                     <Card>
-                                        <div className="flex gap-2 items-center">
-                                            <ButtonIcon
-                                                color="gray"
-                                                onClick={() =>
-                                                    toggleProjectExpansion(
-                                                        project.id,
-                                                    )}
-                                                title="Expand"
-                                            >
+                                        <div
+                                            className="cursor-pointer flex gap-2 items-center"
+                                            role="button"
+                                            onClick={() =>
+                                                toggleProjectExpansion(
+                                                    project.id,
+                                                )}
+                                            title={isExpanded
+                                                ? "Collapse project"
+                                                : "Expand project"}
+                                        >
+                                            <ButtonIcon color="gray">
                                                 <ChevronDownIcon
                                                     className={`size-5 transition-all duration-300 ease-in-out ${
                                                         isExpanded

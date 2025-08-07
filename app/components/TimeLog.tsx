@@ -9,7 +9,7 @@ export default function TimeLog({
     records: {
         id: string;
         projectId: string;
-        date: string;
+        date: string; // "YYYY-MM-DD"
         duration: number;
     }[];
     projectId: string;
@@ -19,6 +19,11 @@ export default function TimeLog({
 
     if (!records.length) return null;
 
+    // Sort records by date in descending order
+    const filteredAndSortedRecords = records
+        .filter((record) => record.projectId === projectId)
+        .sort((a, b) => b.date.localeCompare(a.date));
+
     return (
         <div
             className={`overflow-hidden transition-all duration-300 ease-in-out ${
@@ -26,23 +31,21 @@ export default function TimeLog({
             }`}
         >
             <div className="bg-white dark:bg-slate-800 py-2 rounded-3xl space-y-2 overflow-hidden">
-                {records
-                    .filter((record) => record.projectId === projectId)
-                    .map((record) => (
-                        <div
-                            key={record.id}
-                            className="flex items-center gap-2 pl-4 pr-14 py-2 hover:bg-gray-50 dark:hover:bg-slate-700"
-                        >
-                            <CalendarDaysIcon className="text-gray-400 size-5" />
-                            <span className="flex-1 text-gray-400 tracking-wide">
-                                {record.date}
-                            </span>
-                            <ClockIcon className="text-gray-400 size-5" />
-                            <span className="text-gray-700 dark:text-gray-300 tracking-wide w-20">
-                                {formatTime(record.duration)}
-                            </span>
-                        </div>
-                    ))}
+                {filteredAndSortedRecords.map((record) => (
+                    <div
+                        key={record.id}
+                        className="flex items-center gap-2 pl-4 pr-14 py-2 hover:bg-gray-50 dark:hover:bg-slate-700"
+                    >
+                        <CalendarDaysIcon className="text-gray-400 size-5" />
+                        <span className="flex-1 text-gray-400 tracking-wide">
+                            {record.date}
+                        </span>
+                        <ClockIcon className="text-gray-400 size-5" />
+                        <span className="text-gray-700 dark:text-gray-300 tracking-wide w-20">
+                            {formatTime(record.duration)}
+                        </span>
+                    </div>
+                ))}
             </div>
         </div>
     );
