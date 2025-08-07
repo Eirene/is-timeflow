@@ -15,25 +15,44 @@ export default function Projects() {
         isAdding,
         isLoading,
         isDeleting,
+        error: storeError,
+        subscribe,
         addProject,
-        fetchProjects,
         deleteProject,
     } = useProjectStore();
-    const [newProjectName, setNewProjectName] = useState("");
-    const [error, setError] = useState("");
 
+    const [newProjectName, setNewProjectName] = useState("");
+    const [localError, setLocalError] = useState("");
+
+    // Подписка на обновления Firestore
     useEffect(() => {
-        fetchProjects();
-    }, [fetchProjects]);
+        const unsubscribe = subscribe();
+        return () => unsubscribe();
+    }, [subscribe]);
 
     const addNewProject = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!newProjectName.trim()) return setError("Project name is required");
+        if (!newProjectName.trim()) {
+            setLocalError("Project name is required");
+            return;
+        }
 
         try {
             await addProject(newProjectName);
             setNewProjectName("");
-        } catch {
+            setLocalError("");
+        } catch (error) {
+            setLocalError("Failed to add project");
+        }
+    };
+
+    const handleDelete = async (id: string) => {
+        if (confirm("Are you sure you want to delete this project?")) {
+            try {
+                await deleteProject(id);
+            } catch (error) {
+                setLocalError("Failed to delete project");
+            }
         }
     };
 
@@ -44,11 +63,20 @@ export default function Projects() {
                     value={newProjectName}
                     onChange={(e) => setNewProjectName(e.target.value)}
                     placeholder="Enter project name"
+                    disabled={isAdding}
                 />
 
-                {error && <p className="text-sm text-red-500">{error}</p>}
+                {(localError || storeError) && (
+                    <p className="text-sm text-red-500">
+                        {localError || storeError}
+                    </p>
+                )}
+
                 <div className="text-right">
-                    <Button type="submit" disabled={isAdding || isLoading}>
+                    <Button
+                        type="submit"
+                        disabled={isAdding || isLoading}
+                    >
                         {isAdding ? "Adding..." : "Add Project"}
                     </Button>
                 </div>
@@ -67,7 +95,8 @@ export default function Projects() {
                                 </span>
                                 <ButtonIcon
                                     color="red"
-                                    onClick={() => deleteProject(project.id)}
+                                    onClick={() => handleDelete(project.id)}
+                                    disabled={isDeleting}
                                 >
                                     <TrashIcon className="size-5" />
                                 </ButtonIcon>
@@ -75,7 +104,9 @@ export default function Projects() {
                         ))}
                     </ListContainer>
                 )
-                : "No projects yet. Create one!"}
+                : (
+                    !isLoading && "No projects yet. Create one!"
+                )}
         </div>
     );
 }

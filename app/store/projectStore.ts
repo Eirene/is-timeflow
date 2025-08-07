@@ -1,4 +1,12 @@
 import { create } from "zustand";
+import {
+    addDoc,
+    collection,
+    deleteDoc,
+    doc,
+    onSnapshot,
+} from "firebase/firestore";
+import { db } from "../lib/firebase";
 
 interface Project {
     id: string;
@@ -8,10 +16,10 @@ interface Project {
 interface ProjectStore {
     projects: Project[];
     isAdding: boolean;
-    isLoading: boolean;
+    isLoading: boolean; // Возвращаем isLoading
     isDeleting: boolean;
     error: string | null;
-    fetchProjects: () => Promise<void>;
+    subscribe: () => () => void;
     addProject: (name: string) => Promise<string>;
     deleteProject: (id: string) => Promise<void>;
 }
@@ -19,69 +27,54 @@ interface ProjectStore {
 export const useProjectStore = create<ProjectStore>((set) => ({
     projects: [],
     isAdding: false,
-    isLoading: false,
+    isLoading: true,
     isDeleting: false,
     error: null,
-    fetchProjects: async () => {
-        try {
-            set({ isLoading: true });
 
-            const { collection, getDocs } = await import("firebase/firestore");
-            const { db } = await import("../lib/firebase");
+    // Function for subscribing to project updates
+    subscribe: () => {
+        const projectsCol = collection(db, "projects");
 
-            const querySnapshot = await getDocs(collection(db, "projects"));
-            const projects = querySnapshot.docs.map((doc) => ({
+        set({ isLoading: true });
+
+        const unsubscribe = onSnapshot(projectsCol, (snapshot) => {
+            const projects = snapshot.docs.map((doc) => ({
                 id: doc.id,
                 name: doc.data().name,
             }));
-
             set({ projects, isLoading: false });
-        } catch (error) {
-            console.error("Failed to fetch projects:", error);
-            set({ isLoading: false });
-        }
+        }, (error) => {
+            set({ error: "Connection error", isLoading: false });
+        });
+
+        return unsubscribe;
     },
 
     addProject: async (name) => {
         try {
             set({ isAdding: true, error: null });
-
-            const { addDoc, collection } = await import("firebase/firestore");
-            const { db } = await import("../lib/firebase");
-
             const docRef = await addDoc(collection(db, "projects"), {
                 name: name.trim(),
                 createdAt: new Date(),
             });
-
-            set((state) => ({
-                projects: [...state.projects, { id: docRef.id, name }],
-                isAdding: false,
-            }));
-
             return docRef.id;
         } catch (error) {
-            set({ error: "Failed to add project", isAdding: false });
+            set({ error: "Failed to add project" });
             throw error;
+        } finally {
+            set({ isAdding: false });
         }
     },
 
     deleteProject: async (id) => {
         try {
             set({ isDeleting: true, error: null });
-
-            const { deleteDoc, doc } = await import("firebase/firestore");
-            const { db } = await import("../lib/firebase");
-
             await deleteDoc(doc(db, "projects", id));
-
-            set((state) => ({
-                projects: state.projects.filter((project) => project.id !== id),
-                isDeleting: false,
-            }));
         } catch (error) {
-            set({ error: "Failed to delete project", isDeleting: false });
+            set({ error: "Failed to delete project" });
             throw error;
+        } finally {
+            set({ isDeleting: false });
         }
     },
 }));
