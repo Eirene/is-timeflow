@@ -34,7 +34,7 @@ export default function TimeLog({
                 {filteredAndSortedRecords.map((record) => (
                     <div
                         key={record.id}
-                        className="flex items-center gap-2 pl-4 pr-14 py-2 hover:bg-gray-50 dark:hover:bg-slate-700"
+                        className="flex items-center gap-2 pl-4 pr-2 py-2 hover:bg-gray-50 dark:hover:bg-slate-700"
                     >
                         <CalendarDaysIcon className="text-gray-400 size-5" />
                         <span className="flex-1 text-gray-400 tracking-wide">

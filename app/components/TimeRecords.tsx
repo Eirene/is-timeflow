@@ -180,12 +180,14 @@ export default function TimeRecords() {
                                                 {formatTime(projectTotal)}
                                             </p>
 
-                                            <ButtonIcon
+                                            {
+                                                /* <ButtonIcon
                                                 color="sky"
                                                 title="Start timer"
                                             >
                                                 <PlayIcon className="size-5 translate-x-px" />
-                                            </ButtonIcon>
+                                            </ButtonIcon> */
+                                            }
                                         </div>
                                     </Card>
 
