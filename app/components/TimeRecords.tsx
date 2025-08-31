@@ -179,15 +179,6 @@ export default function TimeRecords() {
                                             <p className="ml-auto shrink-0 w-20 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap tracking-wide">
                                                 {formatTime(projectTotal)}
                                             </p>
-
-                                            {
-                                                /* <ButtonIcon
-                                                color="sky"
-                                                title="Start timer"
-                                            >
-                                                <PlayIcon className="size-5 translate-x-px" />
-                                            </ButtonIcon> */
-                                            }
                                         </div>
                                     </Card>
 
