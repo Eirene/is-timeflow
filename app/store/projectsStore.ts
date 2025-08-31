@@ -43,8 +43,12 @@ export const useProjectsStore = create<ProjectsStore>((set) => ({
                 name: doc.data().name,
             }));
             set({ projects, isLoading: false });
-        }, (_error) => {
-            set({ error: "Connection error", isLoading: false });
+        }, (error) => {
+            console.error("Projects subscription error:", error);
+            set({
+                error: `Failed to load projects: ${error.message}`,
+                isLoading: false,
+            });
         });
 
         return unsubscribe;

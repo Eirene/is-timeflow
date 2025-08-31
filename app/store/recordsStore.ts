@@ -51,8 +51,12 @@ export const useRecordsStore = create<RecordsStore>((set) => ({
                 date: doc.data().date,
             }));
             set({ records, isLoading: false });
-        }, (_error) => {
-            set({ error: "Connection error", isLoading: false });
+        }, (error) => {
+            console.error("Records subscription error:", error);
+            set({
+                error: `Failed to load time records: ${error.message}`,
+                isLoading: false,
+            });
         });
 
         return unsubscribe;
