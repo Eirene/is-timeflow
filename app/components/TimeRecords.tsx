@@ -8,7 +8,7 @@ import Initials from "./ui/Initials";
 import TimeLog from "./TimeLog";
 
 import { ProjectsSkeleton } from "../components/ProjectsSkeleton";
-import { ChevronDownIcon, PlayIcon } from "@heroicons/react/24/outline";
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { useTimeFormat } from "../hooks/useTimeFormat";
 import { ButtonIcon } from "./ui/ButtonIcon";
 import { Tabs } from "./ui/Tabs";

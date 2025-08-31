@@ -43,7 +43,7 @@ export const useProjectsStore = create<ProjectsStore>((set) => ({
                 name: doc.data().name,
             }));
             set({ projects, isLoading: false });
-        }, (error) => {
+        }, (_error) => {
             set({ error: "Connection error", isLoading: false });
         });
 

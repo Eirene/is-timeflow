@@ -51,7 +51,7 @@ export const useRecordsStore = create<RecordsStore>((set) => ({
                 date: doc.data().date,
             }));
             set({ records, isLoading: false });
-        }, (error) => {
+        }, (_error) => {
             set({ error: "Connection error", isLoading: false });
         });
 

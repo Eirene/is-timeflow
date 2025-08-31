@@ -7,6 +7,7 @@ type ButtonIconProps = {
     children: React.ReactNode;
     color?: "gray" | "sky" | "red";
     title?: string;
+    disabled?: boolean;
 };
 
 export const ButtonIcon = ({
@@ -14,9 +15,11 @@ export const ButtonIcon = ({
     children,
     color = "sky",
     title,
+    disabled = false,
 }: ButtonIconProps) => {
     return (
         <button
+            disabled={disabled}
             onClick={onClick}
             title={title}
             className={`cursor-pointer p-2 size-10 rounded-full flex items-center justify-center shrink-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent 

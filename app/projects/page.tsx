@@ -41,7 +41,7 @@ export default function Projects() {
             await addProject(newProjectName);
             setNewProjectName("");
             setLocalError("");
-        } catch (error) {
+        } catch {
             setLocalError("Failed to add project");
         }
     };
@@ -50,7 +50,7 @@ export default function Projects() {
         if (confirm("Are you sure you want to delete this project?")) {
             try {
                 await deleteProject(id);
-            } catch (error) {
+            } catch {
                 setLocalError("Failed to delete project");
             }
         }

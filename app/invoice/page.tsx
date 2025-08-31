@@ -14,7 +14,7 @@ export default function InvoiceForm() {
         )[0];
 
     const [isPreviewMode, setIsPreviewMode] = useState(true);
-    const [formData, setFormData] = useState({
+    const [formData] = useState({
         billTo: "Acme Corporation",
         address: "123 Main St, Springfield, USA",
         selectedDate: today,
@@ -97,7 +97,7 @@ export default function InvoiceForm() {
     };
 
     const debounce = useCallback(
-        <T extends (...args: any[]) => void>(fn: T, delay = 100) => {
+        <T extends (...args: unknown[]) => void>(fn: T, delay = 100) => {
             let timeout: NodeJS.Timeout;
             return function (this: unknown, ...args: Parameters<T>) {
                 clearTimeout(timeout);
@@ -471,8 +471,8 @@ export default function InvoiceForm() {
                                 </h3>
                                 <div className="mt-2 text-sm text-gray-700 dark:text-gray-300">
                                     <p>
-                                        If the download doesn't start, try
-                                        clicking the Download PDF button again.
+                                        If the download does not begin, click
+                                        the Download PDF button once more.
                                     </p>
                                 </div>
                             </div>
