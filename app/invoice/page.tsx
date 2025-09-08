@@ -13,17 +13,37 @@ export default function InvoiceForm() {
             "T",
         )[0];
 
+    // Generate auto invoice number based on current year and month
+    const generateInvoiceNumber = () => {
+        const now = new Date();
+        const year = now.getFullYear().toString().slice(-2); // Last 2 digits of year
+        const month = String(now.getMonth() + 1).padStart(2, "0"); // Month with leading zero
+        return `#${year}${month}`;
+    };
+
     const [isPreviewMode, setIsPreviewMode] = useState(true);
     const [formData] = useState({
-        billTo: "Acme Corporation",
-        address: "123 Main St, Springfield, USA",
+        billTo: "Test Company",
+        address: "123 Main St, City, USA",
         selectedDate: today,
         selectedDueDate: twoWeeksLater,
     });
     const [invoiceItems, setInvoiceItems] = useState([
-        { description: "Web Design Services", quantity: 10, unitPrice: 50 },
-        { description: "Logo Design", quantity: 2, unitPrice: 120 },
-        { description: "Consulting", quantity: 5, unitPrice: 80 },
+        {
+            description: "UX/UI Design & Development, June",
+            quantity: 10.52,
+            unitPrice: 35,
+        },
+        {
+            description: "UX/UI Design & Development, July",
+            quantity: 11.15,
+            unitPrice: 35,
+        },
+        {
+            description: "UX/UI Design & Development, August",
+            quantity: 9.6,
+            unitPrice: 35,
+        },
     ]);
 
     const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -33,14 +53,14 @@ export default function InvoiceForm() {
         .reduce((sum, item) => sum + item.quantity * item.unitPrice, 0)
         .toLocaleString("en-US", {
             style: "currency",
-            currency: "USD",
+            currency: "EUR",
             minimumFractionDigits: 2,
         });
 
     const formattedAmount = (item: { quantity: number; unitPrice: number }) => {
         return (item.quantity * item.unitPrice).toLocaleString("en-US", {
             style: "currency",
-            currency: "USD",
+            currency: "EUR",
             minimumFractionDigits: 2,
         });
     };
@@ -206,7 +226,9 @@ export default function InvoiceForm() {
                                         <div className="text-4xl py-4">
                                             INVOICE
                                         </div>
-                                        <div className="text-base">#123</div>
+                                        <div className="text-base">
+                                            {generateInvoiceNumber()}
+                                        </div>
                                     </div>
                                     <div className="grid grid-cols-2 gap-10 mb-10">
                                         <div>
@@ -260,8 +282,8 @@ export default function InvoiceForm() {
                                                 <th className="px-6 h-10 text-right text-xs font-semibold text-gray-900 dark:text-gray-100 uppercase tracking-wider">
                                                     Unit Price
                                                 </th>
-                                                <th className="px-6 h-10 text-right text-xs font-semibold text-gray-900 dark:text-gray-100 uppercase tracking-wider rounded-r-lg">
-                                                    Amount USD
+                                                <th className="px-6 h-10 text-right text-xs font-semibold text-gray-900 dark:text-gray-100 uppercase tracking-wider rounded-r-lg whitespace-nowrap">
+                                                    Amount, &euro;
                                                 </th>
                                             </tr>
                                         </thead>
@@ -393,12 +415,13 @@ export default function InvoiceForm() {
                                         </div>
                                         <div>
                                             <div className="text-sm mb-2">
-                                                Company Details
+                                                Details
                                             </div>
                                             <div className="text-gray-400">
                                                 <div className="text-xs">
                                                     EIN: 12-3456789
                                                 </div>
+
                                                 <div className="text-xs">
                                                     Registered Office: 123 Tech
                                                     Street, San Francisco, CA

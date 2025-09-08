@@ -176,7 +176,7 @@ export default function TimeRecords() {
                                             <Initials name={project.name} />
                                             <h3>{project.name}</h3>
 
-                                            <p className="ml-auto shrink-0 w-20 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap tracking-wide">
+                                            <p className="ml-auto shrink-0 w-24 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap tracking-wide">
                                                 {formatTime(projectTotal)}
                                             </p>
                                         </div>

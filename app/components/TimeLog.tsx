@@ -41,7 +41,7 @@ export default function TimeLog({
                             {record.date}
                         </span>
                         <ClockIcon className="text-gray-400 size-5" />
-                        <span className="text-gray-700 dark:text-gray-300 tracking-wide w-20">
+                        <span className="text-gray-700 dark:text-gray-300 tracking-wide w-24">
                             {formatTime(record.duration)}
                         </span>
                     </div>
