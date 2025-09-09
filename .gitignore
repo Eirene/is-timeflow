@@ -20,6 +20,9 @@
 # production
 /build
 
+# my dev
+/app/invoice/page_dev.tsx
+
 # misc
 .DS_Store
 *.pem
